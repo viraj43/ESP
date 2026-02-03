@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead ESP Analysis</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 800px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .header h1 {
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .header p {
+        color: #666;
+        font-size: 1.1em;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 2px solid #e9ecef;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1em;
+    }
+
+    input[type="number"] {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1em;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        display: none;
+    }
+
+    .btn-download:hover {
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .result-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 30px;
+        border: 2px solid #e9ecef;
+        display: none;
+    }
+
+    .result-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid #667eea;
+        white-space: pre-wrap;
+        font-family: 'Courier New', monospace;
+        max-height: 400px;
+        overflow-y: auto;
+        line-height: 1.6;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .info-box {
+        background: #e7f3ff;
+        border: 1px solid #b8daff;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-box h4 {
+        color: #0c5460;
+        margin-bottom: 8px;
+    }
+
+    .info-box p {
+        color: #0c5460;
+        font-size: 0.9em;
+        margin: 0;
+    }
+  </style>
+</head>
+<body>
+<a href="/" class="back-btn">← Back to Home</a>
+
+<div class="container">
+  <div class="header">
+    <h1>👥 Lead ESP Analysis</h1>
+    <p>Analyze ESP distribution across your lead database</p>
+  </div>
+
+  <div class="form-section">
+    <div class="info-box">
+      <h4>📊 What this analysis provides:</h4>
+      <p>• Complete ESP breakdown (Google, Microsoft, Others)<br>
+        • Reply status categorization (Actual, Auto, No Replies)<br>
+        • Detailed 4-sheet Excel report with email lists<br>
+        • Comprehensive statistics and percentages</p>
+    </div>
+
+    <form id="leadAnalysisForm">
+      <div class="form-group">
+        <label for="leadCount">📈 Number of Leads to Analyze:</label>
+        <input type="number" id="leadCount" name="leadCount" min="100" max="50000" value="20000" required>
+        <small style="color: #666; margin-top: 5px; display: block;">
+          Recommended: 10,000-20,000 leads for comprehensive analysis
+        </small>
+      </div>
+
+      <button type="submit" class="btn" id="analyzeLeadsBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+        </svg>
+        🚀 Start Lead Analysis
+      </button>
+    </form>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>🔍 Analyzing leads... This may take several minutes.</p>
+      <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+        Processing leads in batches and categorizing by ESP and reply status...
+      </p>
+    </div>
+
+    <button class="btn btn-download" id="downloadLeadBtn" onclick="downloadLeadExcel()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+      </svg>
+      📊 Download Lead Analysis Report
+    </button>
+  </div>
+
+  <div class="result-section" id="resultSection">
+    <div id="resultContent" class="result-content"></div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('leadAnalysisForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const leadCount = document.getElementById('leadCount').value;
+
+      if (!leadCount || leadCount < 100) {
+          alert('⚠️ Please enter a valid number of leads (minimum 100)');
+          return;
+      }
+
+      startLeadAnalysis(leadCount);
+  });
+
+  function startLeadAnalysis(leadCount) {
+      // Show loading
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('analyzeLeadsBtn').disabled = true;
+      document.getElementById('analyzeLeadsBtn').innerHTML = '⏳ Analyzing...';
+      document.getElementById('downloadLeadBtn').style.display = 'none';
+      document.getElementById('resultSection').style.display = 'none';
+
+      // Make API call
+      fetch('/analyze-leads', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `leadCount=${leadCount}`
+      })
+      .then(response => response.text())
+      .then(data => {
+          // Hide loading
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('analyzeLeadsBtn').disabled = false;
+          document.getElementById('analyzeLeadsBtn').innerHTML = `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+              </svg>
+              🚀 Start Lead Analysis
+          `;
+
+          // Show results
+          document.getElementById('resultContent').textContent = data;
+          document.getElementById('resultSection').style.display = 'block';
+
+          // Show download button if analysis was successful
+          if (data.includes('✅ Lead analysis completed successfully!')) {
+              document.getElementById('downloadLeadBtn').style.display = 'block';
+
+              // Show success message
+              const successDiv = document.createElement('div');
+              successDiv.className = 'success-message';
+              successDiv.innerHTML = '🎉 Lead analysis completed successfully! Your comprehensive 4-sheet Excel report is ready for download.';
+              document.getElementById('resultSection').insertBefore(successDiv, document.getElementById('resultContent'));
+          }
+      })
+      .catch(error => {
+          // Hide loading
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('analyzeLeadsBtn').disabled = false;
+          document.getElementById('analyzeLeadsBtn').innerHTML = `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+              </svg>
+              🚀 Start Lead Analysis
+          `;
+
+          // Show error
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error-message';
+          errorDiv.innerHTML = '❌ Error: ' + error.message;
+          document.getElementById('resultSection').style.display = 'block';
+          document.getElementById('resultSection').insertBefore(errorDiv, document.getElementById('resultContent'));
+      });
+  }
+
+  function downloadLeadExcel() {
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = '/download-lead';
+      link.download = 'Lead_ESP_Analysis_Report.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Show download feedback
+      const originalText = document.getElementById('downloadLeadBtn').innerHTML;
+      document.getElementById('downloadLeadBtn').innerHTML = '✅ Downloaded!';
+      setTimeout(() => {
+          document.getElementById('downloadLeadBtn').innerHTML = originalText;
+      }, 2000);
+  }
+</script>
+</body>
+</html>

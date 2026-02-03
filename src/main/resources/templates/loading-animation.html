@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Circular Arrow Loader</title>
+    <style>
+        body {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          background: #fdf6d9;
+        }
+
+        .loader {
+          position: relative;
+          width: 300px;
+          height: 150px;
+        }
+
+        .arrow {
+          position: absolute;
+          top: 60px;
+          left: 0;
+          font-size: 50px;
+          display: inline-block;
+          animation: arrowPath 5s infinite linear;
+        }
+
+        @keyframes arrowPath {
+          0%   { transform: translateX(0) rotate(0deg); }          /* Step 1: start left, pointing right */
+          20%  { transform: translateX(120px) rotate(0deg); }      /* Step 2: move right */
+          40%  { transform: translateX(240px) rotate(0deg); }      /* Step 3: far right */
+          60%  { transform: translate(200px,60px) rotate(90deg);}  /* Step 4: curve down-left */
+          80%  { transform: translateX(0) rotate(180deg); }        /* Step 5: back to left, pointing left */
+          100% { transform: translateX(0) rotate(360deg); }        /* reset, pointing right */
+        }
+    </style>
+</head>
+<body>
+<div class="loader">
+    <div class="arrow">➤</div>
+</div>
+</body>
+</html>

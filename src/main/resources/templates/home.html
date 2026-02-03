@@ -1,0 +1,1103 @@
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>ESP Analyzer - Choose Analysis Type</title>-->
+<!--  <style>-->
+<!--    * {-->
+<!--        margin: 0;-->
+<!--        padding: 0;-->
+<!--        box-sizing: border-box;-->
+<!--    }-->
+
+<!--    body {-->
+<!--        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--        min-height: 100vh;-->
+<!--        display: flex;-->
+<!--        align-items: center;-->
+<!--        justify-content: center;-->
+<!--        padding: 20px;-->
+<!--    }-->
+
+<!--    .container {-->
+<!--        background: white;-->
+<!--        border-radius: 20px;-->
+<!--        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);-->
+<!--        padding: 40px;-->
+<!--        max-width: 1400px;-->
+<!--        width: 100%;-->
+<!--        animation: fadeIn 0.8s ease-out;-->
+<!--        position: relative;-->
+<!--    }-->
+
+<!--    .user-bar {-->
+<!--        display: flex;-->
+<!--        justify-content: space-between;-->
+<!--        align-items: center;-->
+<!--        background: #f8f9fa;-->
+<!--        padding: 15px 20px;-->
+<!--        border-radius: 10px;-->
+<!--        margin-bottom: 30px;-->
+<!--        border: 1px solid #e9ecef;-->
+<!--    }-->
+
+<!--    .user-info {-->
+<!--        display: flex;-->
+<!--        align-items: center;-->
+<!--        gap: 15px;-->
+<!--    }-->
+
+<!--    .user-email {-->
+<!--        font-weight: 600;-->
+<!--        color: #495057;-->
+<!--        font-size: 1em;-->
+<!--    }-->
+
+<!--    .user-role {-->
+<!--        background: #667eea;-->
+<!--        color: white;-->
+<!--        padding: 4px 12px;-->
+<!--        border-radius: 15px;-->
+<!--        font-size: 0.8em;-->
+<!--        font-weight: 600;-->
+<!--        text-transform: uppercase;-->
+<!--    }-->
+
+<!--    .logout-btn {-->
+<!--        background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #ff2d3a 100%);-->
+<!--        color: white;-->
+<!--        border: none;-->
+<!--        padding: 12px 20px;-->
+<!--        border-radius: 12px;-->
+<!--        cursor: pointer;-->
+<!--        font-size: 0.95em;-->
+<!--        font-weight: 700;-->
+<!--        letter-spacing: 0.5px;-->
+<!--        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);-->
+<!--        display: flex;-->
+<!--        align-items: center;-->
+<!--        gap: 10px;-->
+<!--        box-shadow:-->
+<!--            0 4px 15px rgba(255, 71, 87, 0.4),-->
+<!--            inset 0 1px 0 rgba(255, 255, 255, 0.2);-->
+<!--        position: relative;-->
+<!--        overflow: hidden;-->
+<!--        text-transform: uppercase;-->
+<!--        font-family: 'Segoe UI', system-ui, sans-serif;-->
+<!--    }-->
+
+<!--    .logout-btn::before {-->
+<!--        content: '';-->
+<!--        position: absolute;-->
+<!--        top: 0;-->
+<!--        left: -100%;-->
+<!--        width: 100%;-->
+<!--        height: 100%;-->
+<!--        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);-->
+<!--        transition: left 0.6s;-->
+<!--    }-->
+
+<!--    .logout-btn:hover::before {-->
+<!--        left: 100%;-->
+<!--    }-->
+
+<!--    .logout-btn:hover {-->
+<!--        background: linear-gradient(135deg, #ff3742 0%, #ff2d3a 50%, #e02431 100%);-->
+<!--        transform: translateY(-3px) scale(1.02);-->
+<!--        box-shadow:-->
+<!--            0 8px 25px rgba(255, 71, 87, 0.6),-->
+<!--            0 4px 15px rgba(255, 71, 87, 0.3),-->
+<!--            inset 0 1px 0 rgba(255, 255, 255, 0.3);-->
+<!--    }-->
+
+<!--    .logout-btn:active {-->
+<!--        transform: translateY(-1px) scale(1.01);-->
+<!--        transition: all 0.1s ease;-->
+<!--    }-->
+
+<!--    @keyframes fadeIn {-->
+<!--        from {-->
+<!--            opacity: 0;-->
+<!--            transform: translateY(30px);-->
+<!--        }-->
+<!--        to {-->
+<!--            opacity: 1;-->
+<!--            transform: translateY(0);-->
+<!--        }-->
+<!--    }-->
+
+<!--    .header {-->
+<!--        text-align: center;-->
+<!--        margin-bottom: 50px;-->
+<!--    }-->
+
+<!--    .header h1 {-->
+<!--        color: #333;-->
+<!--        font-size: 3em;-->
+<!--        margin-bottom: 15px;-->
+<!--        background: linear-gradient(135deg, #667eea, #764ba2);-->
+<!--        -webkit-background-clip: text;-->
+<!--        -webkit-text-fill-color: transparent;-->
+<!--        background-clip: text;-->
+<!--    }-->
+
+<!--    .header p {-->
+<!--        color: #666;-->
+<!--        font-size: 1.2em;-->
+<!--        margin-bottom: 10px;-->
+<!--    }-->
+
+<!--    .subtitle {-->
+<!--        color: #888;-->
+<!--        font-size: 1em;-->
+<!--        font-style: italic;-->
+<!--    }-->
+
+<!--    .analysis-options {-->
+<!--        display: grid;-->
+<!--        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));-->
+<!--        gap: 25px;-->
+<!--        margin-bottom: 40px;-->
+<!--    }-->
+
+<!--    .analysis-card {-->
+<!--        background: #f8f9fa;-->
+<!--        border-radius: 15px;-->
+<!--        padding: 25px;-->
+<!--        border: 2px solid #e9ecef;-->
+<!--        transition: all 0.3s ease;-->
+<!--        cursor: pointer;-->
+<!--        text-decoration: none;-->
+<!--        color: inherit;-->
+<!--        position: relative;-->
+<!--        overflow: hidden;-->
+<!--    }-->
+
+<!--    .analysis-card::before {-->
+<!--        content: '';-->
+<!--        position: absolute;-->
+<!--        top: 0;-->
+<!--        left: -100%;-->
+<!--        width: 100%;-->
+<!--        height: 100%;-->
+<!--        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);-->
+<!--        transition: left 0.6s;-->
+<!--    }-->
+
+<!--    .analysis-card:hover::before {-->
+<!--        left: 100%;-->
+<!--    }-->
+
+<!--    .analysis-card:hover {-->
+<!--        transform: translateY(-5px);-->
+<!--        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);-->
+<!--        border-color: #667eea;-->
+<!--    }-->
+
+<!--    .card-icon {-->
+<!--        font-size: 2.5em;-->
+<!--        text-align: center;-->
+<!--        margin-bottom: 15px;-->
+<!--    }-->
+
+<!--    .card-title {-->
+<!--        font-size: 1.3em;-->
+<!--        font-weight: 600;-->
+<!--        color: #333;-->
+<!--        text-align: center;-->
+<!--        margin-bottom: 12px;-->
+<!--    }-->
+
+<!--    .card-description {-->
+<!--        color: #666;-->
+<!--        line-height: 1.5;-->
+<!--        text-align: center;-->
+<!--        margin-bottom: 15px;-->
+<!--        font-size: 0.9em;-->
+<!--    }-->
+
+<!--    .card-features {-->
+<!--        list-style: none;-->
+<!--        padding: 0;-->
+<!--        margin-bottom: 15px;-->
+<!--    }-->
+
+<!--    .card-features li {-->
+<!--        color: #555;-->
+<!--        margin-bottom: 6px;-->
+<!--        padding-left: 18px;-->
+<!--        position: relative;-->
+<!--        font-size: 0.85em;-->
+<!--    }-->
+
+<!--    .card-features li:before {-->
+<!--        content: "✓";-->
+<!--        color: #28a745;-->
+<!--        font-weight: bold;-->
+<!--        position: absolute;-->
+<!--        left: 0;-->
+<!--    }-->
+
+<!--    .card-button {-->
+<!--        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--        color: white;-->
+<!--        border: none;-->
+<!--        padding: 10px 20px;-->
+<!--        font-size: 0.9em;-->
+<!--        font-weight: 600;-->
+<!--        border-radius: 8px;-->
+<!--        cursor: pointer;-->
+<!--        transition: all 0.3s ease;-->
+<!--        width: 100%;-->
+<!--        margin-top: 10px;-->
+<!--    }-->
+
+<!--    .card-button:hover {-->
+<!--        transform: translateY(-2px);-->
+<!--        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);-->
+<!--    }-->
+
+<!--    .info-section {-->
+<!--        background: #e8f4fd;-->
+<!--        border-radius: 15px;-->
+<!--        padding: 25px;-->
+<!--        border-left: 4px solid #667eea;-->
+<!--        margin-top: 30px;-->
+<!--    }-->
+
+<!--    .info-section h3 {-->
+<!--        color: #333;-->
+<!--        margin-bottom: 10px;-->
+<!--    }-->
+
+<!--    .info-section p {-->
+<!--        color: #666;-->
+<!--        line-height: 1.6;-->
+<!--        font-size: 0.95em;-->
+<!--    }-->
+
+<!--    @media (max-width: 768px) {-->
+<!--        .analysis-options {-->
+<!--            grid-template-columns: 1fr;-->
+<!--        }-->
+
+<!--        .header h1 {-->
+<!--            font-size: 2.5em;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            padding: 30px;-->
+<!--        }-->
+<!--    }-->
+
+<!--    /* Special styling for rate limit avoidance cards */-->
+<!--    .primary-card {-->
+<!--        border-color: #28a745;-->
+<!--    }-->
+
+<!--    .primary-card:hover {-->
+<!--        border-color: #28a745;-->
+<!--        box-shadow: 0 15px 30px rgba(40, 167, 69, 0.2);-->
+<!--    }-->
+
+<!--    .other-card {-->
+<!--        border-color: #17a2b8;-->
+<!--    }-->
+
+<!--    .other-card:hover {-->
+<!--        border-color: #17a2b8;-->
+<!--        box-shadow: 0 15px 30px rgba(23, 162, 184, 0.2);-->
+<!--    }-->
+
+<!--    .sent-analytics-card {-->
+<!--        border-color: #6f42c1;-->
+<!--    }-->
+
+<!--    .sent-analytics-card:hover {-->
+<!--        border-color: #6f42c1;-->
+<!--        box-shadow: 0 15px 30px rgba(111, 66, 193, 0.2);-->
+<!--    }-->
+
+<!--    .rate-limit-badge {-->
+<!--        position: absolute;-->
+<!--        top: 15px;-->
+<!--        right: 15px;-->
+<!--        background: #28a745;-->
+<!--        color: white;-->
+<!--        padding: 4px 8px;-->
+<!--        border-radius: 12px;-->
+<!--        font-size: 0.7em;-->
+<!--        font-weight: 600;-->
+<!--        text-transform: uppercase;-->
+<!--    }-->
+
+<!--    .api-badge {-->
+<!--        position: absolute;-->
+<!--        top: 15px;-->
+<!--        right: 15px;-->
+<!--        background: #17a2b8;-->
+<!--        color: white;-->
+<!--        padding: 4px 8px;-->
+<!--        border-radius: 12px;-->
+<!--        font-size: 0.7em;-->
+<!--        font-weight: 600;-->
+<!--        text-transform: uppercase;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--  <div class="user-bar">-->
+<!--    <div class="user-info">-->
+<!--      <span class="user-email" th:text="${userEmail}">user@example.com</span>-->
+<!--      <span class="user-role" th:text="${userRole}">USER</span>-->
+<!--    </div>-->
+<!--    <form th:action="@{/logout}" method="post" style="display: inline;">-->
+<!--      <button type="submit" class="logout-btn">-->
+<!--        🚪 Logout-->
+<!--      </button>-->
+<!--    </form>-->
+<!--  </div>-->
+<!--  <div class="header">-->
+<!--    <h1>📧 ESP Analyzer</h1>-->
+<!--    <p>Advanced Email Service Provider Analysis</p>-->
+<!--    <p class="subtitle">Choose your analysis type to get started</p>-->
+<!--  </div>-->
+
+<!--  <div class="analysis-options">-->
+<!--    &lt;!&ndash; Lead ESP Analysis Card &ndash;&gt;-->
+<!--    <a href="/lead-analysis" class="analysis-card">-->
+<!--      <div class="card-icon">👥</div>-->
+<!--      <h2 class="card-title">Lead ESP Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Analyze ESP distribution across your lead database-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Customizable lead count</li>-->
+<!--        <li>Reply status categorization</li>-->
+<!--        <li>Comprehensive ESP mapping</li>-->
+<!--        <li>4-sheet Excel report</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        🚀 Start Lead Analysis-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Primary Replies Analysis Card &ndash;&gt;-->
+<!--    <a href="/primary-replies-analysis" class="analysis-card primary-card">-->
+<!--      <div class="rate-limit-badge">Rate Optimized</div>-->
+<!--      <div class="card-icon">📧</div>-->
+<!--      <h2 class="card-title">Primary Replies Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Focused analysis of primary email replies with ESP breakdown-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date range filtering</li>-->
+<!--        <li>ESP code lookup (Google, Microsoft, Others)</li>-->
+<!--        <li>IST timezone conversion</li>-->
+<!--        <li>Dedicated Excel report</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        📊 Analyze Primary Replies-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Other Replies Analysis Card &ndash;&gt;-->
+<!--    <a href="/other-replies-analysis" class="analysis-card other-card">-->
+<!--      <div class="rate-limit-badge">Rate Optimized</div>-->
+<!--      <div class="card-icon">📮</div>-->
+<!--      <h2 class="card-title">Other Replies Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Analysis of other/secondary email replies without ESP lookup-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date range filtering</li>-->
+<!--        <li>Fast processing (no ESP lookup)</li>-->
+<!--        <li>IST timezone conversion</li>-->
+<!--        <li>Clean Excel export</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        📈 Analyze Other Replies-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Campaign Replies Analysis Card &ndash;&gt;-->
+<!--    <a href="/campaign-replies-analysis" class="analysis-card">-->
+<!--      <div class="card-icon">📧</div>-->
+<!--      <h2 class="card-title">Campaign Replies Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Analyze email replies by specific campaigns with ESP breakdown-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date-filtered campaigns</li>-->
+<!--        <li>Campaign-specific reply fetching</li>-->
+<!--        <li>ESP code lookup for each reply</li>-->
+<!--        <li>Campaign-wise breakdown in Excel</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        📧 Start Campaign Replies Analysis-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Combined Replies Analysis Card (Backward Compatibility) &ndash;&gt;-->
+<!--    <a href="/replies-analysis" class="analysis-card">-->
+<!--      <div class="card-icon">📅</div>-->
+<!--      <h2 class="card-title">Combined Replies Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Legacy: Combined primary + other replies analysis-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Both primary and other replies</li>-->
+<!--        <li>ESP breakdown for primary only</li>-->
+<!--        <li>IST timezone conversion</li>-->
+<!--        <li>Comprehensive Excel report</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        🔄 Legacy Combined Analysis-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Event Type Analysis Card &ndash;&gt;-->
+<!--    <a href="/event-type-analysis" class="analysis-card">-->
+<!--      <div class="card-icon">📊</div>-->
+<!--      <h2 class="card-title">Event Type Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Campaign event type distribution by subsequence/step-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date-filtered campaigns</li>-->
+<!--        <li>Event type matrix (-1, 1, 2, 3, etc.)</li>-->
+<!--        <li>Subsequence breakdown</li>-->
+<!--        <li>Comprehensive Excel matrix</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        📈 Start Event Type Analysis-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Campaign Lead Analysis Card &ndash;&gt;-->
+<!--    <a href="/campaign-lead-analysis" class="analysis-card">-->
+<!--      <div class="card-icon">🎯</div>-->
+<!--      <h2 class="card-title">Campaign Lead Analysis</h2>-->
+<!--      <p class="card-description">-->
+<!--        Analyze lead contact status and ESP distribution by campaign-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date-filtered campaigns</li>-->
+<!--        <li>Contact status tracking</li>-->
+<!--        <li>ESP breakdown for contacted leads</li>-->
+<!--        <li>Campaign-wise lead statistics</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        🎯 Start Campaign Lead Analysis-->
+<!--      </button>-->
+<!--    </a>-->
+
+<!--    &lt;!&ndash; Campaign Sent Analytics Card - NEW &ndash;&gt;-->
+<!--    <a href="/campaign-sent-analytics" class="analysis-card sent-analytics-card">-->
+<!--      <div class="api-badge">Instantly API</div>-->
+<!--      <div class="card-icon">📊</div>-->
+<!--      <h2 class="card-title">Campaign Sent Analytics</h2>-->
+<!--      <p class="card-description">-->
+<!--        Analyze emails sent counts across campaigns using Instantly API-->
+<!--      </p>-->
+<!--      <ul class="card-features">-->
+<!--        <li>Date range filtering</li>-->
+<!--        <li>Campaign-level sent breakdown</li>-->
+<!--        <li>Total emails sent tracking</li>-->
+<!--        <li>Fast Instantly API integration</li>-->
+<!--      </ul>-->
+<!--      <button class="card-button">-->
+<!--        📊 Start Campaign Sent Analytics-->
+<!--      </button>-->
+<!--    </a>-->
+<!--  </div>-->
+
+<!--  <div class="info-section">-->
+<!--    <h3>🔍 How It Works</h3>-->
+<!--    <p>-->
+<!--      <strong>Lead ESP Analysis:</strong> Fetches leads from your database and categorizes them by ESP type, reply status, and provides detailed breakdowns.-->
+<!--      <br><br>-->
+<!--      <strong>Primary Replies Analysis:</strong> Analyzes primary email replies (emode_focused) within a specific date range with full ESP lookup and IST timezone conversion.-->
+<!--      <br><br>-->
+<!--      <strong>Other Replies Analysis:</strong> Analyzes other/secondary email replies (emode_others) within a date range without ESP lookup for faster processing.-->
+<!--      <br><br>-->
+<!--      <strong>Campaign Replies Analysis:</strong> Finds campaigns in date range, fetches replies for each specific campaign, and provides ESP breakdown with campaign-wise statistics.-->
+<!--      <br><br>-->
+<!--      <strong>Combined Replies Analysis:</strong> Legacy option that combines both primary and other replies analysis in one process.-->
+<!--      <br><br>-->
+<!--      <strong>Event Type Analysis:</strong> Fetches campaigns within a date range, analyzes their activity data, and creates a matrix showing event type counts per subsequence/step.-->
+<!--      <br><br>-->
+<!--      <strong>Campaign Lead Analysis:</strong> Analyzes campaigns within a date range, fetches all leads for each campaign, and tracks contact status (status_summary) with ESP breakdown for contacted leads only.-->
+<!--      <br><br>-->
+<!--      <strong>Campaign Sent Analytics:</strong> Uses Instantly API to fetch campaign analytics data within a date range, providing email sent counts per campaign with total aggregation and Excel export.-->
+<!--    </p>-->
+<!--  </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP Analyzer - Choose Analysis Type</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 1400px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+        position: relative;
+    }
+
+    .user-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 1px solid #e9ecef;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .user-email {
+        font-weight: 600;
+        color: #495057;
+        font-size: 1em;
+    }
+
+    .user-role {
+        background: #667eea;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .logout-btn {
+        background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #ff2d3a 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 0.95em;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow:
+            0 4px 15px rgba(255, 71, 87, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .logout-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.6s;
+    }
+
+    .logout-btn:hover::before {
+        left: 100%;
+    }
+
+    .logout-btn:hover {
+        background: linear-gradient(135deg, #ff3742 0%, #ff2d3a 50%, #e02431 100%);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow:
+            0 8px 25px rgba(255, 71, 87, 0.6),
+            0 4px 15px rgba(255, 71, 87, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .logout-btn:active {
+        transform: translateY(-1px) scale(1.01);
+        transition: all 0.1s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .header h1 {
+        color: #333;
+        font-size: 3em;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .header p {
+        color: #666;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #888;
+        font-size: 1em;
+        font-style: italic;
+    }
+
+    .analysis-options {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .analysis-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 25px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .analysis-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+        transition: left 0.6s;
+    }
+
+    .analysis-card:hover::before {
+        left: 100%;
+    }
+
+    .analysis-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+    }
+
+    .card-icon {
+        font-size: 2.5em;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .card-title {
+        font-size: 1.3em;
+        font-weight: 600;
+        color: #333;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+
+    .card-description {
+        color: #666;
+        line-height: 1.5;
+        text-align: center;
+        margin-bottom: 15px;
+        font-size: 0.9em;
+    }
+
+    .card-features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 15px;
+    }
+
+    .card-features li {
+        color: #555;
+        margin-bottom: 6px;
+        padding-left: 18px;
+        position: relative;
+        font-size: 0.85em;
+    }
+
+    .card-features li:before {
+        content: "✓";
+        color: #28a745;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    .card-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 0.9em;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .card-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .info-section {
+        background: #e8f4fd;
+        border-radius: 15px;
+        padding: 25px;
+        border-left: 4px solid #667eea;
+        margin-top: 30px;
+    }
+
+    .info-section h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .info-section p {
+        color: #666;
+        line-height: 1.6;
+        font-size: 0.95em;
+    }
+
+    @media (max-width: 768px) {
+        .analysis-options {
+            grid-template-columns: 1fr;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+        }
+
+        .container {
+            padding: 30px;
+        }
+    }
+
+    /* Special styling for rate limit avoidance cards */
+    .primary-card {
+        border-color: #28a745;
+    }
+
+    .primary-card:hover {
+        border-color: #28a745;
+        box-shadow: 0 15px 30px rgba(40, 167, 69, 0.2);
+    }
+
+    .other-card {
+        border-color: #17a2b8;
+    }
+
+    .other-card:hover {
+        border-color: #17a2b8;
+        box-shadow: 0 15px 30px rgba(23, 162, 184, 0.2);
+    }
+
+    .sent-analytics-card {
+        border-color: #6f42c1;
+    }
+
+    .sent-analytics-card:hover {
+        border-color: #6f42c1;
+        box-shadow: 0 15px 30px rgba(111, 66, 193, 0.2);
+    }
+
+    .rate-limit-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .api-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #17a2b8;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="user-bar">
+    <div class="user-info">
+      <span class="user-email" th:text="${userEmail}">user@example.com</span>
+      <span class="user-role" th:text="${userRole}">USER</span>
+    </div>
+    <form th:action="@{/logout}" method="post" style="display: inline;">
+      <button type="submit" class="logout-btn">
+        🚪 Logout
+      </button>
+    </form>
+  </div>
+  <div class="header">
+    <h1>📧 ESP Analyzer</h1>
+    <p>Advanced Email Service Provider Analysis</p>
+    <p class="subtitle">Choose your analysis type to get started</p>
+  </div>
+
+  <div class="analysis-options">
+    <!-- Lead ESP Analysis Card -->
+    <a href="/lead-analysis" class="analysis-card">
+      <div class="card-icon">👥</div>
+      <h2 class="card-title">Lead ESP Analysis</h2>
+      <p class="card-description">
+        Analyze ESP distribution across your lead database
+      </p>
+      <ul class="card-features">
+        <li>Customizable lead count</li>
+        <li>Reply status categorization</li>
+        <li>Comprehensive ESP mapping</li>
+        <li>4-sheet Excel report</li>
+      </ul>
+      <button class="card-button">
+        🚀 Start Lead Analysis
+      </button>
+    </a>
+
+    <!-- Primary Replies Analysis Card -->
+    <a href="/primary-replies-analysis" class="analysis-card primary-card">
+      <div class="rate-limit-badge">Rate Optimized</div>
+      <div class="card-icon">📧</div>
+      <h2 class="card-title">Primary Replies Analysis</h2>
+      <p class="card-description">
+        Focused analysis of primary email replies with ESP breakdown
+      </p>
+      <ul class="card-features">
+        <li>Date range filtering</li>
+        <li>ESP code lookup (Google, Microsoft, Others)</li>
+        <li>IST timezone conversion</li>
+        <li>Dedicated Excel report</li>
+      </ul>
+      <button class="card-button">
+        📊 Analyze Primary Replies
+      </button>
+    </a>
+
+    <!-- Other Replies Analysis Card -->
+    <a href="/other-replies-analysis" class="analysis-card other-card">
+      <div class="rate-limit-badge">Rate Optimized</div>
+      <div class="card-icon">📮</div>
+      <h2 class="card-title">Other Replies Analysis</h2>
+      <p class="card-description">
+        Analysis of other/secondary email replies without ESP lookup
+      </p>
+      <ul class="card-features">
+        <li>Date range filtering</li>
+        <li>Fast processing (no ESP lookup)</li>
+        <li>IST timezone conversion</li>
+        <li>Clean Excel export</li>
+      </ul>
+      <button class="card-button">
+        📈 Analyze Other Replies
+      </button>
+    </a>
+
+    <!-- Campaign Replies Analysis Card -->
+    <a href="/campaign-replies-analysis" class="analysis-card">
+      <div class="card-icon">📧</div>
+      <h2 class="card-title">Campaign Replies Analysis</h2>
+      <p class="card-description">
+        Analyze email replies by specific campaigns with ESP breakdown
+      </p>
+      <ul class="card-features">
+        <li>Date-filtered campaigns</li>
+        <li>Campaign-specific reply fetching</li>
+        <li>ESP code lookup for each reply</li>
+        <li>Campaign-wise breakdown in Excel</li>
+      </ul>
+      <button class="card-button">
+        📧 Start Campaign Replies Analysis
+      </button>
+    </a>
+
+    <!-- Combined Replies Analysis Card (Backward Compatibility) -->
+    <a href="/replies-analysis" class="analysis-card">
+      <div class="card-icon">📅</div>
+      <h2 class="card-title">Combined Replies Analysis</h2>
+      <p class="card-description">
+        Legacy: Combined primary + other replies analysis
+      </p>
+      <ul class="card-features">
+        <li>Both primary and other replies</li>
+        <li>ESP breakdown for primary only</li>
+        <li>IST timezone conversion</li>
+        <li>Comprehensive Excel report</li>
+      </ul>
+      <button class="card-button">
+        🔄 Legacy Combined Analysis
+      </button>
+    </a>
+
+    <!-- Event Type Analysis Card -->
+    <a href="/event-type-analysis" class="analysis-card">
+      <div class="card-icon">📊</div>
+      <h2 class="card-title">Event Type Analysis</h2>
+      <p class="card-description">
+        Campaign event type distribution by subsequence/step
+      </p>
+      <ul class="card-features">
+        <li>Date-filtered campaigns</li>
+        <li>Event type matrix (-1, 1, 2, 3, etc.)</li>
+        <li>Subsequence breakdown</li>
+        <li>Comprehensive Excel matrix</li>
+      </ul>
+      <button class="card-button">
+        📈 Start Event Type Analysis
+      </button>
+    </a>
+
+    <!-- Campaign Lead Analysis Card -->
+    <a href="/campaign-lead-analysis" class="analysis-card">
+      <div class="card-icon">🎯</div>
+      <h2 class="card-title">Campaign Lead Analysis</h2>
+      <p class="card-description">
+        Analyze lead contact status and ESP distribution by campaign
+      </p>
+      <ul class="card-features">
+        <li>Date-filtered campaigns</li>
+        <li>Contact status tracking</li>
+        <li>ESP breakdown for contacted leads</li>
+        <li>Campaign-wise lead statistics</li>
+      </ul>
+      <button class="card-button">
+        🎯 Start Campaign Lead Analysis
+      </button>
+    </a>
+
+    <!-- Campaign Sent Analytics Card -->
+    <a href="/campaign-sent-analytics" class="analysis-card sent-analytics-card">
+      <div class="api-badge">Instantly API</div>
+      <div class="card-icon">📊</div>
+      <h2 class="card-title">Campaign Sent Analytics</h2>
+      <p class="card-description">
+        Analyze emails sent counts across campaigns using Instantly API
+      </p>
+      <ul class="card-features">
+        <li>Date range filtering</li>
+        <li>Campaign-level sent breakdown</li>
+        <li>Total emails sent tracking</li>
+        <li>Fast Instantly API integration</li>
+      </ul>
+      <button class="card-button">
+        📊 Start Campaign Sent Analytics
+      </button>
+    </a>
+
+    <!-- Email Touch Analysis Card -->
+    <a href="/email-touch-analysis" class="analysis-card">
+      <div class="card-icon">📧</div>
+      <h2 class="card-title">Email Touch Analysis</h2>
+      <p class="card-description">
+        Analyze email sent counts by custom tags with account details
+      </p>
+      <ul class="card-features">
+        <li>Custom tag-based filtering</li>
+        <li>Account-level touch tracking</li>
+        <li>Daily limits and health scores</li>
+        <li>Multi-API data aggregation</li>
+      </ul>
+      <button class="card-button">
+        📧 Start Email Touch Analysis
+      </button>
+    </a>
+  </div>
+
+  <div class="info-section">
+    <h3>🔍 How It Works</h3>
+    <p>
+      <strong>Lead ESP Analysis:</strong> Fetches leads from your database and categorizes them by ESP type, reply status, and provides detailed breakdowns.
+      <br><br>
+      <strong>Primary Replies Analysis:</strong> Analyzes primary email replies (emode_focused) within a specific date range with full ESP lookup and IST timezone conversion.
+      <br><br>
+      <strong>Other Replies Analysis:</strong> Analyzes other/secondary email replies (emode_others) within a date range without ESP lookup for faster processing.
+      <br><br>
+      <strong>Campaign Replies Analysis:</strong> Finds campaigns in date range, fetches replies for each specific campaign, and provides ESP breakdown with campaign-wise statistics.
+      <br><br>
+      <strong>Combined Replies Analysis:</strong> Legacy option that combines both primary and other replies analysis in one process.
+      <br><br>
+      <strong>Event Type Analysis:</strong> Fetches campaigns within a date range, analyzes their activity data, and creates a matrix showing event type counts per subsequence/step.
+      <br><br>
+      <strong>Campaign Lead Analysis:</strong> Analyzes campaigns within a date range, fetches all leads for each campaign, and tracks contact status (status_summary) with ESP breakdown for contacted leads only.
+      <br><br>
+      <strong>Campaign Sent Analytics:</strong> Uses Instantly API to fetch campaign analytics data within a date range, providing email sent counts per campaign with total aggregation and Excel export.
+      <br><br>
+      <strong>Email Touch Analysis:</strong> Searches custom tags, fetches tagged accounts, and analyzes campaign touch data to track email sent counts per account with daily limits and health scores.
+    </p>
+  </div>
+</div>
+</body>
+</html>

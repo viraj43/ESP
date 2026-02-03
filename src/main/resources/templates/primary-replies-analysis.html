@@ -1,0 +1,987 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Primary Replies ESP Analysis</title>-->
+<!--  <style>-->
+<!--    * {-->
+<!--        margin: 0;-->
+<!--        padding: 0;-->
+<!--        box-sizing: border-box;-->
+<!--    }-->
+
+<!--    body {-->
+<!--        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);-->
+<!--        min-height: 100vh;-->
+<!--        display: flex;-->
+<!--        align-items: center;-->
+<!--        justify-content: center;-->
+<!--        padding: 20px;-->
+<!--    }-->
+
+<!--    .container {-->
+<!--        background: white;-->
+<!--        border-radius: 20px;-->
+<!--        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);-->
+<!--        padding: 40px;-->
+<!--        max-width: 800px;-->
+<!--        width: 100%;-->
+<!--        animation: fadeIn 0.8s ease-out;-->
+<!--    }-->
+
+<!--    @keyframes fadeIn {-->
+<!--        from {-->
+<!--            opacity: 0;-->
+<!--            transform: translateY(30px);-->
+<!--        }-->
+<!--        to {-->
+<!--            opacity: 1;-->
+<!--            transform: translateY(0);-->
+<!--        }-->
+<!--    }-->
+
+<!--    .header {-->
+<!--        text-align: center;-->
+<!--        margin-bottom: 40px;-->
+<!--    }-->
+
+<!--    .header h1 {-->
+<!--    display: flex;-->
+<!--    align-items: center;-->
+<!--    justify-content: center;-->
+<!--    gap: 15px;-->
+
+<!--    }-->
+<!--    .emoji-icon {-->
+<!--      color: inherit; /* or specific color like #28a745 */-->
+<!--      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',sans-serif;-->
+
+<!--    }-->
+<!--    .gradient-text {-->
+<!--      background: linear-gradient(135deg, #667eea, #764ba2);-->
+
+<!--      -webkit-background-clip: text;-->
+<!--      -webkit-text-fill-color: transparent;-->
+<!--      background-clip: text;-->
+<!--    }-->
+
+<!--    .header p {-->
+<!--        color: #666;-->
+<!--        font-size: 1.1em;-->
+<!--    }-->
+
+<!--    .back-btn {-->
+<!--        position: absolute;-->
+<!--        top: 20px;-->
+<!--        left: 20px;-->
+<!--        background: #6c757d;-->
+<!--        color: white;-->
+<!--        text-decoration: none;-->
+<!--        padding: 10px 15px;-->
+<!--        border-radius: 8px;-->
+<!--        font-size: 0.9em;-->
+<!--        transition: all 0.3s ease;-->
+<!--    }-->
+
+<!--    .back-btn:hover {-->
+<!--        background: #5a6268;-->
+<!--        transform: translateY(-2px);-->
+<!--    }-->
+
+<!--    .form-section {-->
+<!--        background: #f8f9fa;-->
+<!--        border-radius: 15px;-->
+<!--        padding: 30px;-->
+<!--        margin-bottom: 30px;-->
+<!--        border: 2px solid #e9ecef;-->
+<!--    }-->
+
+<!--    .form-group {-->
+<!--        margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    label {-->
+<!--        display: block;-->
+<!--        margin-bottom: 8px;-->
+<!--        font-weight: 600;-->
+<!--        color: #333;-->
+<!--        font-size: 1em;-->
+<!--    }-->
+
+<!--    input[type="date"] {-->
+<!--        width: 100%;-->
+<!--        padding: 15px;-->
+<!--        border: 2px solid #e1e5e9;-->
+<!--        border-radius: 10px;-->
+<!--        font-size: 1em;-->
+<!--        transition: all 0.3s ease;-->
+<!--        background: white;-->
+<!--    }-->
+
+<!--    input[type="date"]:focus {-->
+<!--        outline: none;-->
+<!--        border-color: #28a745;-->
+<!--        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);-->
+<!--    }-->
+
+<!--    .date-row {-->
+<!--        display: grid;-->
+<!--        grid-template-columns: 1fr 1fr;-->
+<!--        gap: 20px;-->
+<!--    }-->
+
+<!--    @media (max-width: 600px) {-->
+<!--        .date-row {-->
+<!--            grid-template-columns: 1fr;-->
+<!--        }-->
+<!--    }-->
+
+<!--    .btn {-->
+<!--        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);-->
+<!--        color: white;-->
+<!--        border: none;-->
+<!--        padding: 15px 30px;-->
+<!--        font-size: 1.1em;-->
+<!--        font-weight: 600;-->
+<!--        border-radius: 10px;-->
+<!--        cursor: pointer;-->
+<!--        transition: all 0.3s ease;-->
+<!--        display: flex;-->
+<!--        align-items: center;-->
+<!--        justify-content: center;-->
+<!--        gap: 10px;-->
+<!--        width: 100%;-->
+<!--        margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    .btn:hover {-->
+<!--        transform: translateY(-2px);-->
+<!--        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);-->
+<!--    }-->
+
+<!--    .btn:active {-->
+<!--        transform: translateY(0);-->
+<!--    }-->
+
+<!--    .btn:disabled {-->
+<!--        background: #ccc;-->
+<!--        cursor: not-allowed;-->
+<!--        transform: none;-->
+<!--        box-shadow: none;-->
+<!--    }-->
+
+<!--    .btn-download {-->
+<!--        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);-->
+<!--        display: none;-->
+<!--    }-->
+
+<!--    .btn-download:hover {-->
+<!--        box-shadow: 0 10px 25px rgba(23, 162, 184, 0.3);-->
+<!--    }-->
+
+<!--    .loading {-->
+<!--        display: none;-->
+<!--        text-align: center;-->
+<!--        margin: 20px 0;-->
+<!--    }-->
+
+<!--    .spinner {-->
+<!--        border: 4px solid #f3f3f3;-->
+<!--        border-top: 4px solid #28a745;-->
+<!--        border-radius: 50%;-->
+<!--        width: 40px;-->
+<!--        height: 40px;-->
+<!--        animation: spin 1s linear infinite;-->
+<!--        margin: 0 auto 20px;-->
+<!--    }-->
+
+<!--    @keyframes spin {-->
+<!--        0% { transform: rotate(0deg); }-->
+<!--        100% { transform: rotate(360deg); }-->
+<!--    }-->
+
+<!--    .result-section {-->
+<!--        background: #f8f9fa;-->
+<!--        border-radius: 15px;-->
+<!--        padding: 30px;-->
+<!--        margin-top: 30px;-->
+<!--        border: 2px solid #e9ecef;-->
+<!--        display: none;-->
+<!--    }-->
+
+<!--    .result-content {-->
+<!--        background: #fff;-->
+<!--        border-radius: 10px;-->
+<!--        padding: 20px;-->
+<!--        border-left: 4px solid #28a745;-->
+<!--        white-space: pre-wrap;-->
+<!--        font-family: 'Courier New', monospace;-->
+<!--        max-height: 400px;-->
+<!--        overflow-y: auto;-->
+<!--        line-height: 1.6;-->
+<!--    }-->
+
+<!--    .success-message {-->
+<!--        background: #d4edda;-->
+<!--        color: #155724;-->
+<!--        padding: 15px;-->
+<!--        border-radius: 10px;-->
+<!--        margin-bottom: 20px;-->
+<!--        border: 1px solid #c3e6cb;-->
+<!--    }-->
+
+<!--    .error-message {-->
+<!--        background: #f8d7da;-->
+<!--        color: #721c24;-->
+<!--        padding: 15px;-->
+<!--        border-radius: 10px;-->
+<!--        margin-bottom: 20px;-->
+<!--        border: 1px solid #f5c6cb;-->
+<!--    }-->
+
+<!--    .info-box {-->
+<!--        background: #d1ecf1;-->
+<!--        border: 1px solid #bee5eb;-->
+<!--        border-radius: 10px;-->
+<!--        padding: 15px;-->
+<!--        margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    .info-box h4 {-->
+<!--        color: #0c5460;-->
+<!--        margin-bottom: 8px;-->
+<!--    }-->
+
+<!--    .info-box p {-->
+<!--        color: #0c5460;-->
+<!--        font-size: 0.9em;-->
+<!--        margin: 0;-->
+<!--    }-->
+
+<!--    .rate-optimized-badge {-->
+<!--        display: inline-block;-->
+<!--        background: #28a745;-->
+<!--        color: white;-->
+<!--        padding: 4px 8px;-->
+<!--        border-radius: 12px;-->
+<!--        font-size: 0.8em;-->
+<!--        font-weight: 600;-->
+<!--        margin-left: 10px;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<a href="/" class="back-btn">← Back to Home</a>-->
+
+<!--<div class="container">-->
+<!--  <div class="header">-->
+<!--    <h1>-->
+<!--      <span class="emoji-icon">&#128231;</span>-->
+<!--      <span class="gradient-text">Primary Replies Analysis</span>-->
+<!--    </h1>-->
+<!--    <span class="rate-optimized-badge">Rate Limit Optimized</span>-->
+<!--    <p>Analyze primary email replies with complete ESP breakdown</p>-->
+<!--  </div>-->
+
+<!--  <div class="form-section">-->
+<!--    <div class="info-box">-->
+<!--      <h4>📊 What this analysis provides:</h4>-->
+<!--      <p>• Primary email replies only (emode_focused)<br>-->
+<!--        • Complete ESP breakdown (Google, Microsoft, Others)<br>-->
+<!--        • IST timezone conversion for accurate filtering<br>-->
+<!--        • Dedicated Excel report with ESP codes<br>-->
+<!--        • Optimized to avoid rate limits by focusing on primary replies only</p>-->
+<!--    </div>-->
+
+<!--    <form id="primaryRepliesForm">-->
+<!--      <div class="date-row">-->
+<!--        <div class="form-group">-->
+<!--          <label for="fromDate">📅 From Date:</label>-->
+<!--          <input type="date" id="fromDate" name="fromDate" required>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--          <label for="toDate">📅 To Date:</label>-->
+<!--          <input type="date" id="toDate" name="toDate" required>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <button type="submit" class="btn" id="analyzePrimaryBtn">-->
+<!--        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">-->
+<!--          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>-->
+<!--        </svg>-->
+<!--        🚀 Start Primary Replies Analysis-->
+<!--      </button>-->
+<!--    </form>-->
+
+<!--    <div class="loading" id="loading">-->
+<!--      <div class="spinner"></div>-->
+<!--      <p>🔍 Analyzing primary replies... This may take a few minutes.</p>-->
+<!--      <p style="font-size: 0.9em; color: #666; margin-top: 10px;">-->
+<!--        Processing primary email replies and performing ESP lookups...-->
+<!--      </p>-->
+<!--    </div>-->
+
+<!--    <button class="btn btn-download" id="downloadBtn" onclick="downloadPrimaryRepliesExcel()">-->
+<!--      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">-->
+<!--        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>-->
+<!--      </svg>-->
+<!--      📊 Download Primary Replies Report-->
+<!--    </button>-->
+<!--  </div>-->
+
+<!--  <div class="result-section" id="resultSection">-->
+<!--    <div id="resultContent" class="result-content"></div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--  // Set default dates (yesterday and today)-->
+<!--  document.addEventListener('DOMContentLoaded', function() {-->
+<!--      const today = new Date();-->
+<!--      const yesterday = new Date(today);-->
+<!--      yesterday.setDate(yesterday.getDate() - 1);-->
+
+<!--      document.getElementById('fromDate').valueAsDate = yesterday;-->
+<!--      document.getElementById('toDate').valueAsDate = today;-->
+<!--  });-->
+
+<!--  document.getElementById('primaryRepliesForm').addEventListener('submit', function(e) {-->
+<!--      e.preventDefault();-->
+
+<!--      const fromDate = document.getElementById('fromDate').value;-->
+<!--      const toDate = document.getElementById('toDate').value;-->
+
+<!--      if (!fromDate || !toDate) {-->
+<!--          alert('⚠️ Please select both from and to dates');-->
+<!--          return;-->
+<!--      }-->
+
+<!--      // Convert dates to dd-MM-yyyy format-->
+<!--      const fromDateFormatted = formatDateForAPI(fromDate);-->
+<!--      const toDateFormatted = formatDateForAPI(toDate);-->
+
+<!--      startPrimaryRepliesAnalysis(fromDateFormatted, toDateFormatted);-->
+<!--  });-->
+
+<!--  function formatDateForAPI(dateString) {-->
+<!--      const date = new Date(dateString);-->
+<!--      const day = date.getDate().toString().padStart(2, '0');-->
+<!--      const month = (date.getMonth() + 1).toString().padStart(2, '0');-->
+<!--      const year = date.getFullYear();-->
+<!--      return `${day}-${month}-${year}`;-->
+<!--  }-->
+
+<!--  function startPrimaryRepliesAnalysis(fromDate, toDate) {-->
+<!--      // Show loading-->
+<!--      document.getElementById('loading').style.display = 'block';-->
+<!--      document.getElementById('analyzePrimaryBtn').disabled = true;-->
+<!--      document.getElementById('analyzePrimaryBtn').innerHTML = '⏳ Analyzing...';-->
+<!--      document.getElementById('downloadBtn').style.display = 'none';-->
+<!--      document.getElementById('resultSection').style.display = 'none';-->
+
+<!--      // Make API call-->
+<!--      fetch('/analyze-primary-replies', {-->
+<!--          method: 'POST',-->
+<!--          headers: {-->
+<!--              'Content-Type': 'application/x-www-form-urlencoded',-->
+<!--          },-->
+<!--          body: `fromDate=${fromDate}&toDate=${toDate}`-->
+<!--      })-->
+<!--      .then(response => response.text())-->
+<!--      .then(data => {-->
+<!--          // Hide loading-->
+<!--          document.getElementById('loading').style.display = 'none';-->
+<!--          document.getElementById('analyzePrimaryBtn').disabled = false;-->
+<!--          document.getElementById('analyzePrimaryBtn').innerHTML = `-->
+<!--              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">-->
+<!--                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>-->
+<!--              </svg>-->
+<!--              🚀 Start Primary Replies Analysis-->
+<!--          `;-->
+
+<!--          // Show results-->
+<!--          document.getElementById('resultContent').textContent = data;-->
+<!--          document.getElementById('resultSection').style.display = 'block';-->
+
+<!--          // Show download button if analysis was successful-->
+<!--          if (data.includes('✅ Primary Replies Excel report generated successfully!')) {-->
+<!--              document.getElementById('downloadBtn').style.display = 'block';-->
+
+<!--              // Show success message-->
+<!--              const successDiv = document.createElement('div');-->
+<!--              successDiv.className = 'success-message';-->
+<!--              successDiv.innerHTML = '🎉 Primary Replies Analysis completed successfully! Your ESP breakdown report is ready for download.';-->
+<!--              document.getElementById('resultSection').insertBefore(successDiv, document.getElementById('resultContent'));-->
+<!--          }-->
+<!--      })-->
+<!--      .catch(error => {-->
+<!--          // Hide loading-->
+<!--          document.getElementById('loading').style.display = 'none';-->
+<!--          document.getElementById('analyzePrimaryBtn').disabled = false;-->
+<!--          document.getElementById('analyzePrimaryBtn').innerHTML = `-->
+<!--              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">-->
+<!--                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>-->
+<!--              </svg>-->
+<!--              🚀 Start Primary Replies Analysis-->
+<!--          `;-->
+
+<!--          // Show error-->
+<!--          const errorDiv = document.createElement('div');-->
+<!--          errorDiv.className = 'error-message';-->
+<!--          errorDiv.innerHTML = '❌ Error: ' + error.message;-->
+<!--          document.getElementById('resultSection').style.display = 'block';-->
+<!--          document.getElementById('resultSection').insertBefore(errorDiv, document.getElementById('resultContent'));-->
+<!--      });-->
+<!--  }-->
+
+<!--  function downloadPrimaryRepliesExcel() {-->
+<!--      // Create a temporary anchor element and trigger download-->
+<!--      const link = document.createElement('a');-->
+<!--      link.href = '/download-primary-replies';-->
+<!--      link.download = 'Primary_Replies_Analysis_Report.xlsx';-->
+<!--      document.body.appendChild(link);-->
+<!--      link.click();-->
+<!--      document.body.removeChild(link);-->
+
+<!--      // Show download feedback-->
+<!--      const originalText = document.getElementById('downloadBtn').innerHTML;-->
+<!--      document.getElementById('downloadBtn').innerHTML = '✅ Downloaded!';-->
+<!--      setTimeout(() => {-->
+<!--          document.getElementById('downloadBtn').innerHTML = originalText;-->
+<!--      }, 2000);-->
+<!--  }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primary Replies ESP Analysis</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 800px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .header h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    }
+    .emoji-icon {
+      color: inherit;
+      font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',sans-serif;
+
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+        color: #666;
+        font-size: 1.1em;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 2px solid #e9ecef;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1em;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    input[type="date"]:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    }
+
+    .date-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .date-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .checkbox-group {
+        background: white;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-group:hover {
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.05);
+    }
+
+    .checkbox-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        accent-color: #28a745;
+    }
+
+    .checkbox-label {
+        font-weight: 600;
+        color: #333;
+        font-size: 1em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .checkbox-description {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 8px;
+        padding-left: 34px;
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1em;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        display: none;
+    }
+
+    .btn-download:hover {
+        box-shadow: 0 10px 25px rgba(23, 162, 184, 0.3);
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #28a745;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .result-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 30px;
+        border: 2px solid #e9ecef;
+        display: none;
+    }
+
+    .result-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid #28a745;
+        white-space: pre-wrap;
+        font-family: 'Courier New', monospace;
+        max-height: 400px;
+        overflow-y: auto;
+        line-height: 1.6;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .info-box {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-box h4 {
+        color: #0c5460;
+        margin-bottom: 8px;
+    }
+
+    .info-box p {
+        color: #0c5460;
+        font-size: 0.9em;
+        margin: 0;
+    }
+
+    .rate-optimized-badge {
+        display: inline-block;
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+<a href="/" class="back-btn">← Back to Home</a>
+
+<div class="container">
+  <div class="header">
+    <h1>
+      <span class="emoji-icon">&#128231;</span>
+      <span class="gradient-text">Primary Replies Analysis</span>
+    </h1>
+    <span class="rate-optimized-badge">Rate Limit Optimized</span>
+    <p>Analyze primary email replies with complete ESP breakdown</p>
+  </div>
+
+  <div class="form-section">
+    <div class="info-box">
+      <h4>📊 What this analysis provides:</h4>
+      <p>• Primary email replies only (emode_focused)<br>
+        • Complete ESP breakdown (Google, Microsoft, Others) - Optional<br>
+        • IST timezone conversion for accurate filtering<br>
+        • Dedicated Excel report with ESP codes<br>
+        • Optimized to avoid rate limits by focusing on primary replies only</p>
+    </div>
+
+    <form id="primaryRepliesForm">
+      <div class="date-row">
+        <div class="form-group">
+          <label for="fromDate">📅 From Date:</label>
+          <input type="date" id="fromDate" name="fromDate" required>
+        </div>
+        <div class="form-group">
+          <label for="toDate">📅 To Date:</label>
+          <input type="date" id="toDate" name="toDate" required>
+        </div>
+      </div>
+
+      <div class="checkbox-group">
+        <div class="checkbox-wrapper">
+          <input type="checkbox" id="includeEspAnalysis" name="includeEspAnalysis" checked>
+          <label for="includeEspAnalysis" class="checkbox-label">
+            <span>🔍 Include ESP Analysis (Google, Microsoft, Others)</span>
+          </label>
+        </div>
+        <div class="checkbox-description">
+          ⚡ Uncheck to skip ESP code lookup and speed up analysis (ESP breakdown will show as "N/A")
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="analyzePrimaryBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+        </svg>
+        🚀 Start Primary Replies Analysis
+      </button>
+    </form>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p id="loadingText">🔍 Analyzing primary replies... This may take a few minutes.</p>
+      <p style="font-size: 0.9em; color: #666; margin-top: 10px;" id="loadingSubtext">
+        Processing primary email replies and performing ESP lookups...
+      </p>
+    </div>
+
+    <button class="btn btn-download" id="downloadBtn" onclick="downloadPrimaryRepliesExcel()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+      </svg>
+      📊 Download Primary Replies Report
+    </button>
+  </div>
+
+  <div class="result-section" id="resultSection">
+    <div id="resultContent" class="result-content"></div>
+  </div>
+</div>
+
+<script>
+  // Set default dates (yesterday and today)
+  document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      document.getElementById('fromDate').valueAsDate = yesterday;
+      document.getElementById('toDate').valueAsDate = today;
+  });
+
+  // Update loading message based on ESP checkbox
+  document.getElementById('includeEspAnalysis').addEventListener('change', function() {
+      const isChecked = this.checked;
+      const loadingText = document.getElementById('loadingText');
+      const loadingSubtext = document.getElementById('loadingSubtext');
+
+      if (isChecked) {
+          loadingText.textContent = '🔍 Analyzing primary replies... This may take a few minutes.';
+          loadingSubtext.textContent = 'Processing primary email replies and performing ESP lookups...';
+      } else {
+          loadingText.textContent = '🔍 Analyzing primary replies... This will be faster without ESP analysis.';
+          loadingSubtext.textContent = 'Processing primary email replies only...';
+      }
+  });
+
+  document.getElementById('primaryRepliesForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fromDate = document.getElementById('fromDate').value;
+      const toDate = document.getElementById('toDate').value;
+      const includeEspAnalysis = document.getElementById('includeEspAnalysis').checked;
+
+      if (!fromDate || !toDate) {
+          alert('⚠️ Please select both from and to dates');
+          return;
+      }
+
+      // Convert dates to dd-MM-yyyy format
+      const fromDateFormatted = formatDateForAPI(fromDate);
+      const toDateFormatted = formatDateForAPI(toDate);
+
+      startPrimaryRepliesAnalysis(fromDateFormatted, toDateFormatted, includeEspAnalysis);
+  });
+
+  function formatDateForAPI(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+  }
+
+  function startPrimaryRepliesAnalysis(fromDate, toDate, includeEspAnalysis) {
+      // Show loading
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('analyzePrimaryBtn').disabled = true;
+      document.getElementById('analyzePrimaryBtn').innerHTML = '⏳ Analyzing...';
+      document.getElementById('downloadBtn').style.display = 'none';
+      document.getElementById('resultSection').style.display = 'none';
+
+      // Make API call
+      fetch('/analyze-primary-replies', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `fromDate=${fromDate}&toDate=${toDate}&includeEspAnalysis=${includeEspAnalysis}`
+      })
+      .then(response => response.text())
+      .then(data => {
+          // Hide loading
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('analyzePrimaryBtn').disabled = false;
+          document.getElementById('analyzePrimaryBtn').innerHTML = `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+              </svg>
+              🚀 Start Primary Replies Analysis
+          `;
+
+          // Show results
+          document.getElementById('resultContent').textContent = data;
+          document.getElementById('resultSection').style.display = 'block';
+
+          // Show download button if analysis was successful
+          if (data.includes('✅ Primary Replies Excel report generated successfully!')) {
+              document.getElementById('downloadBtn').style.display = 'block';
+
+              // Show success message
+              const successDiv = document.createElement('div');
+              successDiv.className = 'success-message';
+              successDiv.innerHTML = '🎉 Primary Replies Analysis completed successfully! Your report is ready for download.';
+              document.getElementById('resultSection').insertBefore(successDiv, document.getElementById('resultContent'));
+          }
+      })
+      .catch(error => {
+          // Hide loading
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('analyzePrimaryBtn').disabled = false;
+          document.getElementById('analyzePrimaryBtn').innerHTML = `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+              </svg>
+              🚀 Start Primary Replies Analysis
+          `;
+
+          // Show error
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error-message';
+          errorDiv.innerHTML = '❌ Error: ' + error.message;
+          document.getElementById('resultSection').style.display = 'block';
+          document.getElementById('resultSection').insertBefore(errorDiv, document.getElementById('resultContent'));
+      });
+  }
+
+  function downloadPrimaryRepliesExcel() {
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = '/download-primary-replies';
+      link.download = 'Primary_Replies_Analysis_Report.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Show download feedback
+      const originalText = document.getElementById('downloadBtn').innerHTML;
+      document.getElementById('downloadBtn').innerHTML = '✅ Downloaded!';
+      setTimeout(() => {
+          document.getElementById('downloadBtn').innerHTML = originalText;
+      }, 2000);
+  }
+</script>
+</body>
+</html>

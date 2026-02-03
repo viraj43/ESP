@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Touch Analysis</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 900px;
+        width: 100%;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .header h1 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        color: #333;
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+
+    .emoji-icon {
+        color: inherit;
+        font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+    }
+
+    .gradient-text {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .header p {
+        color: #666;
+        font-size: 1.1em;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        border: 2px solid #e9ecef;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1em;
+    }
+
+    input[type="date"] {
+        width: 100%;
+        padding: 15px;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    input[type="date"]:focus {
+        outline: none;
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1em;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        opacity: 0.6;
+    }
+
+    .btn-download {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        display: none;
+    }
+
+    .btn-download:hover {
+        box-shadow: 0 10px 25px rgba(23, 162, 184, 0.3);
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #28a745;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .result-section {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin-top: 30px;
+        border: 2px solid #e9ecef;
+        display: none;
+    }
+
+    .result-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        border-left: 4px solid #28a745;
+        white-space: pre-wrap;
+        font-family: 'Courier New', monospace;
+        max-height: 400px;
+        overflow-y: auto;
+        line-height: 1.6;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #c3e6cb;
+    }
+
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f5c6cb;
+    }
+
+    .info-box {
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-box h4 {
+        color: #0c5460;
+        margin-bottom: 8px;
+    }
+
+    .info-box p {
+        color: #0c5460;
+        font-size: 0.9em;
+        margin: 0;
+    }
+
+    .tag-badge {
+        display: inline-block;
+        background: #28a745;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        font-weight: 600;
+        margin-left: 10px;
+    }
+
+    .example-box {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 8px;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 0.85em;
+        color: #856404;
+    }
+
+    .api-flow {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+        border-left: 4px solid #28a745;
+    }
+
+    .api-flow h5 {
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+    }
+
+    .api-flow p {
+        color: #666;
+        font-size: 0.8em;
+        margin: 0;
+    }
+
+    .tags-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 2px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 20px;
+        background: white;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 12px;
+    }
+
+    .tag-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        background: #f8f9fa;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.9em;
+    }
+
+    .tag-checkbox:hover {
+        background: #e3f2fd;
+        border-color: #2196f3;
+        transform: translateY(-1px);
+    }
+
+    .tag-checkbox.selected {
+        background: #e8f5e8;
+        border-color: #28a745;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+    }
+
+    .tag-checkbox input[type="checkbox"] {
+        margin: 0;
+        transform: scale(1.3);
+        cursor: pointer;
+    }
+
+    .tag-label {
+        flex: 1;
+        user-select: none;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .tag-description {
+        font-size: 0.75em;
+        color: #666;
+        font-style: italic;
+        margin-top: 3px;
+    }
+
+    .loading-tags {
+        text-align: center;
+        color: #666;
+        padding: 40px;
+        font-style: italic;
+        grid-column: 1 / -1;
+    }
+
+    .tags-error {
+        text-align: center;
+        color: #dc3545;
+        padding: 20px;
+        background: #f8d7da;
+        border-radius: 8px;
+        border: 1px solid #f5c6cb;
+        grid-column: 1 / -1;
+    }
+
+    .selected-tags-info {
+        background: #e8f5e8;
+        border: 1px solid #c3e6cb;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 15px;
+        font-size: 0.9em;
+        color: #155724;
+        display: none;
+    }
+
+    .tags-count {
+        font-weight: 600;
+        color: #28a745;
+    }
+
+    @media (max-width: 600px) {
+        .tags-container {
+            grid-template-columns: 1fr;
+        }
+
+        .container {
+            padding: 20px;
+        }
+    }
+  </style>
+</head>
+<body>
+<a href="/" class="back-btn">← Back to Home</a>
+
+<div class="container">
+  <div class="header">
+    <h1>
+      <span class="emoji-icon">📧</span>
+      <span class="gradient-text">Email Touch Analysis</span>
+    </h1>
+    <span class="tag-badge">Tag-Based Analysis</span>
+    <p>Analyze email sent counts by custom tags and date</p>
+  </div>
+
+  <div class="form-section">
+    <div class="info-box">
+      <h4>📊 What this analysis provides:</h4>
+      <p>• Email sent counts by custom tag for a specific date<br>
+        • Daily limit and health score for each email account<br>
+        • Account-level touch analysis from campaign data<br>
+        • Excel export with comprehensive email statistics<br>
+        • Multi-API integration for complete data aggregation</p>
+    </div>
+
+    <div class="example-box">
+      <strong>Select Tags:</strong> Choose one or more custom tags to analyze email accounts and their touch data for the specified date.
+    </div>
+
+    <div class="api-flow">
+      <h5>Analysis Process:</h5>
+      <p>1. Select custom tags → 2. Fetch tagged accounts → 3. Analyze campaign data → 4. Generate report</p>
+    </div>
+
+    <form id="emailTouchForm">
+      <div class="form-group">
+        <label>🏷️ Select Custom Tags:</label>
+        <div class="tags-container" id="tagsContainer">
+          <div class="loading-tags">Loading available tags...</div>
+        </div>
+        <div class="selected-tags-info" id="selectedTagsInfo">
+          <strong>Selected tags:</strong> <span id="selectedTagsList">None</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="analysisDate">📅 Analysis Date:</label>
+        <input type="date" id="analysisDate" name="analysisDate" required>
+      </div>
+
+      <button type="submit" class="btn" id="analyzeEmailTouchBtn" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+        </svg>
+        Start Email Touch Analysis
+      </button>
+    </form>
+
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>📧 Analyzing email touches... Processing custom tags and campaign data...</p>
+      <p style="font-size: 0.9em; color: #666; margin-top: 10px;">
+        This may take a few minutes depending on the number of accounts...
+      </p>
+    </div>
+
+    <button class="btn btn-download" id="downloadBtn" onclick="downloadEmailTouchExcel()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+      </svg>
+      📊 Download Email Touch Report
+    </button>
+  </div>
+
+  <div class="result-section" id="resultSection">
+    <div id="resultContent" class="result-content"></div>
+  </div>
+</div>
+
+<!--<script>-->
+<!--  // Available tags data-->
+<!--&lt;!&ndash;  { id: "5a29a333-cae7-4dea-9220-4989d14dac2a", label: "Nurture", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "579f1f7a-154c-4619-a5d6-8ed0b8775915", label: "MSFT_Sep_25", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "d59ac6bf-9fde-4476-a7ba-f8bdaf11d49c", label: "FT", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "3ac4f451-ba92-4fc2-b6eb-a1bef347be1b", label: "BNT", description: "This is use for BNT Campaign" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "265c9ec6-aff0-4fc3-a729-d6528797d74b", label: "HR_Campaign", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "fe20664c-2bc6-4367-898a-f16a505ad076", label: "Bucket - 11", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "0dfaa472-c2cd-4095-82a1-6a05251a4d32", label: "New_Mail", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "a14837e8-0140-4a1b-b4d7-447c1f5d872a", label: "Bucket - 10", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "7dfa20e6-b73c-41ab-ba02-b998ff50c4e9", label: "Future_Leads_Campaign", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "f24d6ed7-ba36-43b6-a3c7-4794be544079", label: "MSFT_1", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "e2090324-0bcb-495a-8ebf-335a37375cf5", label: "MSFT_2", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "0d602488-77f4-4d57-b8a3-78b8b45117ed", label: "USA_Nurture", description: "USA Nurture Mailboxes" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "cb786874-804e-4cb8-a5a8-77a65959a34e", label: "India_Nurture", description: "Nurture India Microsoft Mailboxes" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "884fba64-c9d5-42ef-a37d-c49cf3f28d66", label: "Blocked", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "c2c94735-a444-4245-8568-12f6863b3d74", label: "MSFT", description: "Microsoft Mailboxes Transferred from Nurture" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "a3a4e3b9-fd97-4171-a09c-af6de2326c9e", label: "Removed", description: "Removed Domains Mailboxes" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "dbc732f0-c36b-4089-aa52-ab52a25d6871", label: "Bucket - 9", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "4500db81-9501-4e5d-9fe3-2688d8ce13c3", label: "Bucket - 9", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "84c5a708-054b-44e5-b45f-0f51dffaafd7", label: "Bucket - 8", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "b42bcebc-a00f-464c-8d43-7a3c114225de", label: "Bucket - 7", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "66f317a0-c9b4-4fa6-92db-96f0b6772148", label: "Bucket - 6", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "a97087fe-801b-4322-8ab1-40d0b0caf563", label: "Bucket - 5", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "cedd3b0a-5230-4e5c-9da9-7b18fa9f063e", label: "Bucket - 4", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "09785755-b51e-4feb-81ae-4b08ded5208c", label: "Bucket - 1", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "fb881775-c24f-4ef9-96ec-d24e82ce795b", label: "Bucket - 3", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "f6bd14be-329a-40ee-9b20-9711a59436ac", label: "Bucket - 2", description: "" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "b1bf44df-963f-4555-9149-8e5c1ad3818e", label: "Nurture- GSUIT", description: "Nurture Google Mailboxes" },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "61e91ed2-ac39-4392-9457-37bce56b320c", label: "Clay ", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "e6b4283b-a53e-4364-a1e2-33b4748d7136", label: "Hiring", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "20998a60-4193-467c-993a-7c27c3a4645c", label: "Trail", description: null },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "36846dfe-9893-43ce-9aea-38e1cf96f097", label: "B1-100-Mails", description: "Bucket 1 Mails " },&ndash;&gt;-->
+<!--&lt;!&ndash;    { id: "6ccb6de0-6c0c-4632-aade-ff565d00b727", label: "New_B4", description: "New accounts of B4 campaign" }&ndash;&gt;-->
+<!--  const availableTags = [];-->
+<!--  const getUrl = "https://app.instantly.ai/backend-alt/api/v1/custom-tag?search=&limit=20&";-->
+<!--  let skip =0;-->
+<!--  let customTagsList = [];-->
+<!--  while(true){-->
+<!--    const getUrl_Updated = getUrl+"skip="skip;-->
+<!--    skip += 20;-->
+<!--    const Response = await fetch(getUrl_Updated,{-->
+<!--        method : 'GET',-->
+<!--        headers : {-->
+<!--          'X-Org-Auth' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3X2lkIjoiZmM0YzdlNTktMzIxOS00NGJkLTgzMDYtODNjOGYwM2Y0YjM1IiwiaWF0IjoxNzUzOTQ2MTU5fQ.WG2gDkP_RUpAV06yka7fkYZPaAIKMaA4k-VcMTRcpL0'-->
+<!--        }-->
+<!--    });-->
+<!--    const tags = Response.json().data.map(object =>{-->
+<!--      return {-->
+<!--        id : object.id,-->
+<!--        label : object.label-->
+<!--      };-->
+<!--    });-->
+<!--    customTagsList.push(...tags);-->
+<!--    if(Response.data.length < 20){-->
+<!--      break;-->
+<!--    }-->
+<!--  }-->
+<!--  availableTags.push(...customTagsList);-->
+<!--  let selectedTags = [];-->
+
+<!--  // Initialize page-->
+<!--  document.addEventListener('DOMContentLoaded', function() {-->
+<!--      console.log('Initializing Email Touch Analysis page...');-->
+
+<!--      // Set default date-->
+<!--      const today = new Date();-->
+<!--      const dateStr = today.toISOString().split('T')[0];-->
+
+<!--      const dateInput = document.getElementById('analysisDate');-->
+<!--      if (dateInput) {-->
+<!--          dateInput.value = dateStr;-->
+<!--      }-->
+
+<!--      // Load tags-->
+<!--      loadTags();-->
+<!--  });-->
+
+<!--  function loadTags() {-->
+<!--      console.log('Loading tags...');-->
+<!--      const container = document.getElementById('tagsContainer');-->
+
+<!--      if (!container) {-->
+<!--          console.error('Tags container not found');-->
+<!--          return;-->
+<!--      }-->
+
+<!--      // Clear container-->
+<!--      container.innerHTML = '';-->
+
+<!--      // Sort tags alphabetically-->
+<!--      const sortedTags = [...availableTags].sort((a, b) => a.label.localeCompare(b.label));-->
+
+<!--      // Create tag elements-->
+<!--      sortedTags.forEach(tag => {-->
+<!--          const tagElement = createTagElement(tag);-->
+<!--          container.appendChild(tagElement);-->
+<!--      });-->
+
+<!--      console.log('Tags loaded successfully:', sortedTags.length);-->
+<!--  }-->
+
+<!--  function createTagElement(tag) {-->
+<!--      const tagDiv = document.createElement('div');-->
+<!--      tagDiv.className = 'tag-checkbox';-->
+<!--      tagDiv.setAttribute('data-tag-id', tag.id);-->
+
+<!--      const checkbox = document.createElement('input');-->
+<!--      checkbox.type = 'checkbox';-->
+<!--      checkbox.id = `tag-${tag.id}`;-->
+
+<!--      const labelDiv = document.createElement('div');-->
+<!--      labelDiv.className = 'tag-label';-->
+
+<!--      const labelText = document.createElement('div');-->
+<!--      labelText.textContent = tag.label;-->
+<!--      labelDiv.appendChild(labelText);-->
+
+<!--      if (tag.description && tag.description.trim()) {-->
+<!--          const description = document.createElement('div');-->
+<!--          description.className = 'tag-description';-->
+<!--          description.textContent = tag.description;-->
+<!--          labelDiv.appendChild(description);-->
+<!--      }-->
+
+<!--      // Event handlers-->
+<!--      const handleChange = () => {-->
+<!--          const isChecked = checkbox.checked;-->
+<!--          handleTagSelection(tag, isChecked);-->
+<!--      };-->
+
+<!--      checkbox.addEventListener('change', handleChange);-->
+
+<!--      tagDiv.addEventListener('click', (e) => {-->
+<!--          if (e.target !== checkbox) {-->
+<!--              checkbox.checked = !checkbox.checked;-->
+<!--              handleChange();-->
+<!--          }-->
+<!--      });-->
+
+<!--      tagDiv.appendChild(checkbox);-->
+<!--      tagDiv.appendChild(labelDiv);-->
+
+<!--      return tagDiv;-->
+<!--  }-->
+
+<!--  function handleTagSelection(tag, isSelected) {-->
+<!--      const tagDiv = document.querySelector(`[data-tag-id="${tag.id}"]`);-->
+
+<!--      if (isSelected) {-->
+<!--          selectedTags.push(tag);-->
+<!--          tagDiv.classList.add('selected');-->
+<!--      } else {-->
+<!--          selectedTags = selectedTags.filter(t => t.id !== tag.id);-->
+<!--          tagDiv.classList.remove('selected');-->
+<!--      }-->
+
+<!--      updateSelectedTagsInfo();-->
+<!--      updateAnalyzeButton();-->
+<!--  }-->
+
+<!--  function updateSelectedTagsInfo() {-->
+<!--      const infoDiv = document.getElementById('selectedTagsInfo');-->
+<!--      const listSpan = document.getElementById('selectedTagsList');-->
+
+<!--      if (!infoDiv || !listSpan) return;-->
+
+<!--      if (selectedTags.length === 0) {-->
+<!--          infoDiv.style.display = 'none';-->
+<!--      } else {-->
+<!--          infoDiv.style.display = 'block';-->
+<!--          const tagLabels = selectedTags.map(t => t.label).join(', ');-->
+<!--          listSpan.innerHTML = `<span class="tags-count">${selectedTags.length}</span> tags: ${tagLabels}`;-->
+<!--      }-->
+<!--  }-->
+
+<!--  function updateAnalyzeButton() {-->
+<!--      const analyzeBtn = document.getElementById('analyzeEmailTouchBtn');-->
+<!--      if (!analyzeBtn) return;-->
+
+<!--      analyzeBtn.disabled = selectedTags.length === 0;-->
+<!--  }-->
+
+<!--  // Form submission-->
+<!--  document.getElementById('emailTouchForm').addEventListener('submit', function(e) {-->
+<!--      e.preventDefault();-->
+
+<!--      const analysisDate = document.getElementById('analysisDate').value;-->
+
+<!--      if (selectedTags.length === 0) {-->
+<!--          alert('Please select at least one custom tag');-->
+<!--          return;-->
+<!--      }-->
+
+<!--      if (!analysisDate) {-->
+<!--          alert('Please select an analysis date');-->
+<!--          return;-->
+<!--      }-->
+
+<!--      const dateFormatted = formatDateForAPI(analysisDate);-->
+<!--      const tagLabels = selectedTags.map(t => t.label).join(',');-->
+
+<!--      startEmailTouchAnalysis(tagLabels, dateFormatted);-->
+<!--  });-->
+
+<!--  function formatDateForAPI(dateString) {-->
+<!--      const date = new Date(dateString);-->
+<!--      const day = date.getDate().toString().padStart(2, '0');-->
+<!--      const month = (date.getMonth() + 1).toString().padStart(2, '0');-->
+<!--      const year = date.getFullYear();-->
+<!--      return `${day}-${month}-${year}`;-->
+<!--  }-->
+
+<!--  function startEmailTouchAnalysis(tagSearch, date) {-->
+<!--      clearPreviousResults();-->
+
+<!--      const elements = {-->
+<!--          loading: document.getElementById('loading'),-->
+<!--          analyzeBtn: document.getElementById('analyzeEmailTouchBtn'),-->
+<!--          downloadBtn: document.getElementById('downloadBtn'),-->
+<!--          resultSection: document.getElementById('resultSection')-->
+<!--      };-->
+
+<!--      if (elements.loading) elements.loading.style.display = 'block';-->
+<!--      if (elements.analyzeBtn) {-->
+<!--          elements.analyzeBtn.disabled = true;-->
+<!--          elements.analyzeBtn.innerHTML = 'Analyzing...';-->
+<!--      }-->
+<!--      if (elements.downloadBtn) elements.downloadBtn.style.display = 'none';-->
+<!--      if (elements.resultSection) elements.resultSection.style.display = 'none';-->
+
+<!--      fetch('/analyze-email-touch', {-->
+<!--          method: 'POST',-->
+<!--          headers: {-->
+<!--              'Content-Type': 'application/x-www-form-urlencoded',-->
+<!--          },-->
+<!--          body: `tagSearch=${encodeURIComponent(tagSearch)}&date=${date}`-->
+<!--      })-->
+<!--      .then(response => {-->
+<!--          if (!response.ok) {-->
+<!--              throw new Error(`HTTP ${response.status}: ${response.statusText}`);-->
+<!--          }-->
+<!--          return response.text();-->
+<!--      })-->
+<!--      .then(data => {-->
+<!--          hideLoadingAndResetButton();-->
+
+<!--          const resultContent = document.getElementById('resultContent');-->
+<!--          if (resultContent) resultContent.textContent = data;-->
+<!--          if (elements.resultSection) elements.resultSection.style.display = 'block';-->
+
+<!--          if (data.includes('Email Level Touch Analysis completed successfully!')) {-->
+<!--              if (elements.downloadBtn) elements.downloadBtn.style.display = 'block';-->
+<!--              showSuccessMessage();-->
+<!--          } else if (data.includes('Error:')) {-->
+<!--              showErrorMessage('Analysis completed with errors. Please check the details below.');-->
+<!--          }-->
+<!--      })-->
+<!--      .catch(error => {-->
+<!--          hideLoadingAndResetButton();-->
+<!--          showErrorMessage('Error: ' + error.message);-->
+
+<!--          const resultContent = document.getElementById('resultContent');-->
+<!--          if (resultContent) resultContent.textContent = 'Analysis failed: ' + error.message;-->
+<!--      });-->
+<!--  }-->
+
+<!--  function hideLoadingAndResetButton() {-->
+<!--      const loading = document.getElementById('loading');-->
+<!--      const analyzeBtn = document.getElementById('analyzeEmailTouchBtn');-->
+
+<!--      if (loading) loading.style.display = 'none';-->
+<!--      if (analyzeBtn) {-->
+<!--          analyzeBtn.disabled = selectedTags.length === 0;-->
+<!--          analyzeBtn.innerHTML = `-->
+<!--              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">-->
+<!--                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>-->
+<!--              </svg>-->
+<!--              Start Email Touch Analysis-->
+<!--          `;-->
+<!--      }-->
+<!--  }-->
+
+<!--  function showSuccessMessage() {-->
+<!--      const resultSection = document.getElementById('resultSection');-->
+<!--      const resultContent = document.getElementById('resultContent');-->
+<!--      if (!resultSection || !resultContent) return;-->
+
+<!--      const successDiv = document.createElement('div');-->
+<!--      successDiv.className = 'success-message';-->
+<!--      successDiv.innerHTML = 'Email Touch Analysis completed successfully! Your detailed report is ready for download.';-->
+<!--      resultSection.insertBefore(successDiv, resultContent);-->
+<!--  }-->
+
+<!--  function showErrorMessage(message) {-->
+<!--      const resultSection = document.getElementById('resultSection');-->
+<!--      const resultContent = document.getElementById('resultContent');-->
+<!--      if (!resultSection || !resultContent) return;-->
+
+<!--      resultSection.style.display = 'block';-->
+<!--      const errorDiv = document.createElement('div');-->
+<!--      errorDiv.className = 'error-message';-->
+<!--      errorDiv.innerHTML = message;-->
+<!--      resultSection.insertBefore(errorDiv, resultContent);-->
+<!--  }-->
+
+<!--  function clearPreviousResults() {-->
+<!--      const resultSection = document.getElementById('resultSection');-->
+<!--      if (!resultSection) return;-->
+
+<!--      const messages = resultSection.querySelectorAll('.success-message, .error-message');-->
+<!--      messages.forEach(msg => msg.remove());-->
+<!--  }-->
+
+<!--  function downloadEmailTouchExcel() {-->
+<!--      const link = document.createElement('a');-->
+<!--      link.href = '/download-email-touch';-->
+<!--      link.download = 'Email_Touch_Analysis_Report.xlsx';-->
+<!--      document.body.appendChild(link);-->
+<!--      link.click();-->
+<!--      document.body.removeChild(link);-->
+
+<!--      const downloadBtn = document.getElementById('downloadBtn');-->
+<!--      if (downloadBtn) {-->
+<!--          const originalText = downloadBtn.innerHTML;-->
+<!--          downloadBtn.innerHTML = 'Downloaded!';-->
+<!--          setTimeout(() => {-->
+<!--              downloadBtn.innerHTML = originalText;-->
+<!--          }, 2000);-->
+<!--      }-->
+<!--  }-->
+<!--</script>-->
+
+<script>
+  // Available tags data: Initialized as an empty array.
+  // It will be populated by the asynchronous call to the backend.
+  let availableTags = [];
+  let selectedTags = [];
+
+  /**
+   * Fetches all custom tags by calling the local Spring Boot backend endpoint.
+   * The backend securely handles the external API call and pagination.
+   * @returns {Promise<Array>} A promise that resolves with the list of tags.
+   */
+  async function fetchingTags() {
+    try {
+      // ⭐️ Call your local Spring Boot endpoint ⭐️
+      const response = await fetch('/api/tags', {
+        method: 'GET',
+        // The backend handles the X-Org-Auth header, not the frontend.
+      });
+
+      if (!response.ok) {
+        console.error(`Local API Fetch Error: Status ${response.status}`);
+        // Throw an error that will be caught by the DOMContentLoaded block
+        throw new Error(`Local backend failed to fetch tags (Status: ${response.status})`);
+      }
+
+      const tagsData = await response.json();
+      return tagsData || [];
+
+    } catch (error) {
+      console.error("Critical Error during local tag fetch:", error.message);
+      // Re-throw to show the user-facing error message
+      throw error;
+    }
+  }
+
+
+  // Initialize page
+  document.addEventListener('DOMContentLoaded', async function() {
+      console.log('Initializing Email Touch Analysis page...');
+
+      // Set default date
+      const today = new Date();
+      const dateStr = today.toISOString().split('T')[0];
+
+      const dateInput = document.getElementById('analysisDate');
+      if (dateInput) {
+          dateInput.value = dateStr;
+      }
+
+      const analyzeBtn = document.getElementById('analyzeEmailTouchBtn');
+      const tagsContainer = document.getElementById('tagsContainer');
+
+      try {
+          // ⭐️ ASYNCHRONOUSLY fetch all tags from the backend ⭐️
+          availableTags = await fetchingTags();
+
+          // ⭐️ Load tags only AFTER the data is available ⭐️
+          loadTags();
+
+      } catch (error) {
+          // If fetching fails, display the error and disable the button
+          console.error('Failed to load tags:', error);
+          if (tagsContainer) {
+             tagsContainer.innerHTML = `<div class="tags-error">Failed to load custom tags. Please check the backend service logs.</div>`;
+          }
+          if (analyzeBtn) {
+             analyzeBtn.disabled = true;
+          }
+      }
+  });
+
+  function loadTags() {
+      console.log('Loading tags...');
+      const container = document.getElementById('tagsContainer');
+
+      if (!container) {
+          console.error('Tags container not found');
+          return;
+      }
+
+      // Clear container (removes the "Loading available tags..." text)
+      container.innerHTML = '';
+
+      // Sort tags alphabetically
+      const sortedTags = [...availableTags].sort((a, b) => a.label.localeCompare(b.label));
+
+      // Create tag elements
+      sortedTags.forEach(tag => {
+          const tagElement = createTagElement(tag);
+          container.appendChild(tagElement);
+      });
+
+      console.log('Tags loaded successfully:', sortedTags.length);
+      updateAnalyzeButton(); // Ensure button is enabled if tags are loaded
+  }
+
+  function createTagElement(tag) {
+      const tagDiv = document.createElement('div');
+      tagDiv.className = 'tag-checkbox';
+      tagDiv.setAttribute('data-tag-id', tag.id);
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `tag-${tag.id}`;
+
+      const labelDiv = document.createElement('div');
+      labelDiv.className = 'tag-label';
+
+      const labelText = document.createElement('div');
+      labelText.textContent = tag.label;
+      labelDiv.appendChild(labelText);
+
+      // Note: We rely on the backend now providing 'description' if available.
+      if (tag.description && tag.description.trim()) {
+          const description = document.createElement('div');
+          description.className = 'tag-description';
+          description.textContent = tag.description;
+          labelDiv.appendChild(description);
+      }
+
+      // Event handlers
+      const handleChange = () => {
+          const isChecked = checkbox.checked;
+          handleTagSelection(tag, isChecked);
+      };
+
+      checkbox.addEventListener('change', handleChange);
+
+      tagDiv.addEventListener('click', (e) => {
+          if (e.target !== checkbox) {
+              checkbox.checked = !checkbox.checked;
+              handleChange();
+          }
+      });
+
+      tagDiv.appendChild(checkbox);
+      tagDiv.appendChild(labelDiv);
+
+      return tagDiv;
+  }
+
+  function handleTagSelection(tag, isSelected) {
+      const tagDiv = document.querySelector(`[data-tag-id="${tag.id}"]`);
+
+      if (isSelected) {
+          selectedTags.push(tag);
+          tagDiv.classList.add('selected');
+      } else {
+          selectedTags = selectedTags.filter(t => t.id !== tag.id);
+          tagDiv.classList.remove('selected');
+      }
+
+      updateSelectedTagsInfo();
+      updateAnalyzeButton();
+  }
+
+  function updateSelectedTagsInfo() {
+      const infoDiv = document.getElementById('selectedTagsInfo');
+      const listSpan = document.getElementById('selectedTagsList');
+
+      if (!infoDiv || !listSpan) return;
+
+      if (selectedTags.length === 0) {
+          infoDiv.style.display = 'none';
+      } else {
+          infoDiv.style.display = 'block';
+          const tagLabels = selectedTags.map(t => t.label).join(', ');
+          listSpan.innerHTML = `<span class="tags-count">${selectedTags.length}</span> tags: ${tagLabels}`;
+      }
+  }
+
+  function updateAnalyzeButton() {
+      const analyzeBtn = document.getElementById('analyzeEmailTouchBtn');
+      if (!analyzeBtn) return;
+
+      // Button is enabled if tags are available AND at least one is selected.
+      analyzeBtn.disabled = availableTags.length === 0 || selectedTags.length === 0;
+  }
+
+  // Form submission
+  document.getElementById('emailTouchForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const analysisDate = document.getElementById('analysisDate').value;
+
+      if (selectedTags.length === 0) {
+          alert('Please select at least one custom tag');
+          return;
+      }
+
+      if (!analysisDate) {
+          alert('Please select an analysis date');
+          return;
+      }
+
+      const dateFormatted = formatDateForAPI(analysisDate);
+      const tagLabels = selectedTags.map(t => t.label).join(',');
+
+      startEmailTouchAnalysis(tagLabels, dateFormatted);
+  });
+
+  function formatDateForAPI(dateString) {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+  }
+
+  function startEmailTouchAnalysis(tagSearch, date) {
+      clearPreviousResults();
+
+      const elements = {
+          loading: document.getElementById('loading'),
+          analyzeBtn: document.getElementById('analyzeEmailTouchBtn'),
+          downloadBtn: document.getElementById('downloadBtn'),
+          resultSection: document.getElementById('resultSection')
+      };
+
+      if (elements.loading) elements.loading.style.display = 'block';
+      if (elements.analyzeBtn) {
+          elements.analyzeBtn.disabled = true;
+          elements.analyzeBtn.innerHTML = 'Analyzing...';
+      }
+      if (elements.downloadBtn) elements.downloadBtn.style.display = 'none';
+      if (elements.resultSection) elements.resultSection.style.display = 'none';
+
+      fetch('/analyze-email-touch', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `tagSearch=${encodeURIComponent(tagSearch)}&date=${date}`
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          return response.text();
+      })
+      .then(data => {
+          hideLoadingAndResetButton();
+
+          const resultContent = document.getElementById('resultContent');
+          if (resultContent) resultContent.textContent = data;
+          if (elements.resultSection) elements.resultSection.style.display = 'block';
+
+          if (data.includes('Email Level Touch Analysis completed successfully!')) {
+              if (elements.downloadBtn) elements.downloadBtn.style.display = 'block';
+              showSuccessMessage();
+          } else if (data.includes('Error:')) {
+              showErrorMessage('Analysis completed with errors. Please check the details below.');
+          }
+      })
+      .catch(error => {
+          hideLoadingAndResetButton();
+          showErrorMessage('Error: ' + error.message);
+
+          const resultContent = document.getElementById('resultContent');
+          if (resultContent) resultContent.textContent = 'Analysis failed: ' + error.message;
+      });
+  }
+
+  function hideLoadingAndResetButton() {
+      const loading = document.getElementById('loading');
+      const analyzeBtn = document.getElementById('analyzeEmailTouchBtn');
+
+      if (loading) loading.style.display = 'none';
+      if (analyzeBtn) {
+          updateAnalyzeButton(); // Use the logic that checks if tags are available
+          analyzeBtn.innerHTML = `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+              </svg>
+              Start Email Touch Analysis
+          `;
+      }
+  }
+
+  function showSuccessMessage() {
+      const resultSection = document.getElementById('resultSection');
+      const resultContent = document.getElementById('resultContent');
+      if (!resultSection || !resultContent) return;
+
+      const successDiv = document.createElement('div');
+      successDiv.className = 'success-message';
+      successDiv.innerHTML = 'Email Touch Analysis completed successfully! Your detailed report is ready for download.';
+      resultSection.insertBefore(successDiv, resultContent);
+  }
+
+  function showErrorMessage(message) {
+      const resultSection = document.getElementById('resultSection');
+      const resultContent = document.getElementById('resultContent');
+      if (!resultSection || !resultContent) return;
+
+      resultSection.style.display = 'block';
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error-message';
+      errorDiv.innerHTML = message;
+      resultSection.insertBefore(errorDiv, resultContent);
+  }
+
+  function clearPreviousResults() {
+      const resultSection = document.getElementById('resultSection');
+      if (!resultSection) return;
+
+      const messages = resultSection.querySelectorAll('.success-message, .error-message');
+      messages.forEach(msg => msg.remove());
+  }
+
+  function downloadEmailTouchExcel() {
+      const link = document.createElement('a');
+      link.href = '/download-email-touch';
+      link.download = 'Email_Touch_Analysis_Report.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      const downloadBtn = document.getElementById('downloadBtn');
+      if (downloadBtn) {
+          const originalText = downloadBtn.innerHTML;
+          downloadBtn.innerHTML = 'Downloaded!';
+          setTimeout(() => {
+              downloadBtn.innerHTML = originalText;
+          }, 2000);
+      }
+  }
+</script>
+</body>
+</html>
