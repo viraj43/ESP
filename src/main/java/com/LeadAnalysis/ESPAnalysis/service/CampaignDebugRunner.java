@@ -2,7 +2,6 @@ package com.LeadAnalysis.ESPAnalysis.service;
 
 import com.LeadAnalysis.ESPAnalysis.config.API;
 import io.restassured.response.Response;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class Test {
+public class CampaignDebugRunner {
     private static final String X_Org_Auth =API.API_KEY;
     private static final String BASE_URI =API.BASE_URL;
 
@@ -116,7 +115,11 @@ public class Test {
                 break;
             }
 
-            before_id = activityHistory.getLast().get("id").toString();
+            if (!activityHistory.isEmpty()) {
+                before_id = activityHistory.get(activityHistory.size() - 1)
+                        .get("id")
+                        .toString();
+            }
             System.out.println("totalCount: " + total_count);
         }
 
